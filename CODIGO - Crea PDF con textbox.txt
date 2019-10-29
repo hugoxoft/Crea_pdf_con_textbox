@@ -1,0 +1,33 @@
+Imports System.IO
+Imports iTextSharp.text
+Imports iTextSharp.text.html.simpleparser
+Imports iTextSharp.text.pdf
+
+Partial Class Default
+    Inherits System.Web.UI.Page
+
+    Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim v_rutagenera_pdf As String = "c:\archivosgeneradospdf\"
+        Dim v_nombre_pdf As String = Me.TextBox_id.Text + "_registro"
+        GeneraPDF("--------------------------------------------------------------------------<br/>" & _
+        "ID: " + Me.TextBox_id.Text + "<br/>" & _
+        "--------------------------------------------------------------------------<br/>" & _
+        "Nombre : " + Me.TextBox_nombre.Text.Trim + "<br/>" & _
+        "Ciudad : " + Me.TextBox_ciudad.Text.Trim + "<br/>" & _
+        "Edad : " + Me.TextBox_edad.Text.Trim + "<br/>" & _
+        "Puesto : " + Me.TextBox_puesto.Text.Trim + "<br/>" & _
+        "--------------------------------------------------------------------------<br/>", v_rutagenera_pdf + v_nombre_pdf + ".pdf")
+    End Sub
+
+    Public Sub GeneraPDF(ByVal origen As String, ByVal destino As String)
+        Dim sw As StringWriter = New StringWriter()
+        sw.WriteLine(origen)
+        Dim sr As StringReader = New StringReader(sw.ToString())
+        Dim archivopdf As Document = New Document()
+        Dim htmlparser As HTMLWorker = New HTMLWorker(archivopdf)
+        PdfWriter.GetInstance(archivopdf, New FileStream(destino, FileMode.Create))
+        archivopdf.Open()
+        htmlparser.Parse(sr)
+        archivopdf.Close()
+    End Sub
+End Class
